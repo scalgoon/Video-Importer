@@ -1,6 +1,6 @@
 <img src="accessories-camera.svg" alt="App Icon"></img>
 
-# Video-Importer
+# Videodeck
 A NodeJS/Bash video import system for Linux based systems
 <br>
 <br>
@@ -11,7 +11,7 @@ REQUIRES NODE VERSION 16.15.1 AND ABOVE
 <br>
 <br>
 ## First Use
-Once you have downloaded and un-zipped your files to <b>/home/$USER/Downloads/Import</b>, right click inside the folder to open it in your terminal.
+Once you have downloaded and un-zipped your files to <b>/home/$USER/Downloads/Videodeck</b>, right click inside the folder to open it in your terminal.
 <br>
 <br>
 Once there run this command:
@@ -39,12 +39,12 @@ From there you will follow the prompts for the selected process.
 
 As this project is a Persional project.
 
-However, the following conditions are voided for Video Importer:
+However, the following conditions are voided for Videodeck:
 > You waive Your rights to any material which you contribute towards the repository, you do not gain any ownership over the repository or material within it nor do you retain any rights to the material which you contributed.
 
 ***What can i do with this code?***
 
-You are allowed to use and add-to this code to help make the bot better.
+You are allowed to use and add-to this code to help make the app better.
 
 ***Can I claim what i add as MY code?***
 
