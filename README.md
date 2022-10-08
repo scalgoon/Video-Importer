@@ -1,4 +1,4 @@
-<img src="camera-web.png" alt="App Icon"></img>
+<img src="accessories-camera.svg" alt="App Icon"></img>
 
 # Video-Importer
 A NodeJS/Bash video import system
