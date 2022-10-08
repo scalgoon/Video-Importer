@@ -8,7 +8,7 @@ const whoami = execSync('whoami', { encoding: 'utf-8' })
 
 const who = whoami.trim()
 
-const db = new JsonDB(new Config(`/home/${who}/Downloads/Import/database`, true, false, '/'));
+const db = new JsonDB(new Config(`/home/${who}/Downloads/Videodeck/database`, true, false, '/'));
 
 module.exports = {
     deleteMedia: async () => {
