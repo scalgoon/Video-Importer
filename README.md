@@ -1,7 +1,7 @@
 <img src="accessories-camera.svg" alt="App Icon"></img>
 
 # Video-Importer
-A NodeJS/Bash video import system
+A NodeJS/Bash video import system for Linux based systems
 
 ![Version](https://img.shields.io/badge/version-1.5.0-green.svg?cacheSeconds=2592000&style=for-the-badge)
 [![license](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://opensource.org/licenses/MIT) 
