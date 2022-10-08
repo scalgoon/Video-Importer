@@ -2,6 +2,9 @@
 
 # Video-Importer
 A NodeJS/Bash video import system for Linux based systems
+<br>
+<br>
+REQUIRES NODE VERSION 16.15.1 AND ABOVE
 
 ![Version](https://img.shields.io/badge/version-1.5.0-green.svg?cacheSeconds=2592000&style=for-the-badge)
 [![license](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://opensource.org/licenses/MIT) 
