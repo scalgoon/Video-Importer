@@ -8,9 +8,9 @@ const whoami = execSync('whoami', { encoding: 'utf-8' })
 
 const who = whoami.trim()
 
-const db = new JsonDB(new Config(`/home/${who}/Downloads/Import/database`, true, false, '/'));
+const db = new JsonDB(new Config(`/home/${who}/Downloads/Videodeck/database`, true, false, '/'));
 
-let dir = `/home/${who}/Downloads/Import/`;
+let dir = `/home/${who}/Downloads/Videodeck/`;
 
 if (fs.existsSync(dir)) {
 
@@ -84,6 +84,6 @@ if (fs.existsSync(dir)) {
 
 } else {
 
-    let END = execSync('zenity --error --title "Setup Failed" --text "Please make sure the app folder is in <b>/home/$USER/Downloads/</b> and is named <b>Import</b>!" --no-wrap', { encoding: 'utf-8' })
+    let END = execSync('zenity --error --title "Setup Failed" --text "Please make sure the app folder is in <b>/home/$USER/Downloads/</b> and is named <b>Videodeck</b>!" --no-wrap', { encoding: 'utf-8' })
 
 }
