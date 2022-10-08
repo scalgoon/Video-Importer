@@ -8,7 +8,7 @@ const whoami = execSync('whoami', { encoding: 'utf-8' })
 
 const who = whoami.trim()
 
-const db = new JsonDB(new Config(`/home/${who}/Downloads/Import/database`, true, false, '/'));
+const db = new JsonDB(new Config(`/home/${who}/Downloads/Videodeck/database`, true, false, '/'));
 
 module.exports = {
     installService: async () => {
@@ -53,7 +53,7 @@ module.exports = {
 
                 const nodeVersion = getNode.trim();
                 
-                const writeCode = execSync(`echo "[Desktop Entry]\nType=Application\nEncoding=UTF-8\nName=${finalAppName}\nIcon=/home/${who}/Downloads/Import/accessories-camera.svg\nExec=${nodeVersion} /home/${who}/Downloads/Import/service.js" >> "/home/${who}/Desktop/${finalAppName}.desktop"`, { encoding: 'utf-8' })
+                const writeCode = execSync(`echo "[Desktop Entry]\nType=Application\nEncoding=UTF-8\nName=${finalAppName}\nIcon=/home/${who}/Downloads/Videodeck/accessories-camera.svg\nExec=${nodeVersion} /home/${who}/Downloads/Videodeck/service.js" >> "/home/${who}/Desktop/${finalAppName}.desktop"`, { encoding: 'utf-8' })
 
                 let FINAL = execSync(`zenity --info --title "Setup for ${finalAppName}" --text "<b>${finalAppName}</b> is fully set up." --no-wrap`, { encoding: 'utf-8' })
 
