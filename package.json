@@ -1,0 +1,15 @@
+{
+  "name": "server-dialog",
+  "version": "1.5.0",
+  "description": "",
+  "main": "service.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dez",
+  "license": "ISC",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "node-json-db": "^2.1.3"
+  }
+}
