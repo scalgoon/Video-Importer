@@ -40,7 +40,7 @@ if (fs.existsSync(dir)) {
 
                 const folderDir = data.folderDir;
 
-                const START = execSync(`zenity --info --title "${appName}" --text "To begin select which action you want to take." --no-wrap --ok-label "Import Media" --extra-button "Add Workspace Folder" --extra-button "Delete Project"`, { encoding: 'utf-8' })
+                const START = execSync(`zenity --info --title "${appName}" --text "To begin select which action you want to take." --no-wrap --ok-label "Import Media" --extra-button "Add Workspace Folder" --extra-button "Delete Workspace Folder" --extra-button "Delete Project"`, { encoding: 'utf-8' })
 
                 let app = require('./functions/import');
 
@@ -52,9 +52,17 @@ if (fs.existsSync(dir)) {
 
                 if (e.status === 1 && e.stdout === "Add Workspace Folder\n") {
 
-                    let app2 = require('./functions/workspace');
+                    let app2 = require('./functions/workspace-add');
 
                     app2.addWorkspace();
+
+                    return;
+
+                }else if (e.status === 1 && e.stdout === "Delete Workspace Folder\n") {
+
+                    let app2 = require('./functions/workspace-delete');
+
+                    app2.deleteWorkspace();
 
                     return;
 
