@@ -19,6 +19,8 @@ module.exports = {
 
         const folderDir = data.folderDir;
 
+        const projInfo = data.infoFile;
+
         try {
 
             const output = execSync(`for dir in ${folderDir}/*/; do basename "$dir"; done`, { encoding: 'utf-8' });
@@ -36,20 +38,30 @@ module.exports = {
         --column="*" --column="Workspace" \
             ${useChoices}`, { encoding: 'utf-8' })
 
-            // const name = execSync('zenity --entry --title "Project Name" --text "Please enter the name of your project"', { encoding: 'utf-8' })
+            let projectName;
 
-            const projectInfo = execSync(`zenity --forms --title="Import Media" --text="Project Information" \
+            if (projInfo === undefined) {
+
+                const name = execSync('zenity --entry --title "Project Name" --text "Please enter the name of your project"', { encoding: 'utf-8' })
+
+                projectName = name.trim();
+
+            } else {
+
+                const projectInfo = execSync(`zenity --forms --title="Import Media" --text="Project Information" \
             --add-entry="Project Name" \
             --add-entry="Details" \
             --add-calendar="Due Date"`, { encoding: 'utf-8' })
 
-            const trimProjectInfo = projectInfo.trim();
+                const trimProjectInfo = projectInfo.trim();
 
-            const splitProjectInfo = trimProjectInfo.split("|");
+                const splitProjectInfo = trimProjectInfo.split("|");
 
-            const arrayProjectInfo = Array.from(splitProjectInfo);
+                const arrayProjectInfo = Array.from(splitProjectInfo);
 
-            const projectName = arrayProjectInfo[0];
+                projectName = arrayProjectInfo[0];
+
+            }
 
             const normalName = choices.trim();
 
@@ -71,7 +83,9 @@ module.exports = {
 
             const copyFiles = execSync(`zenity --password | sudo -S cp -r "${newVideo}" "${folderDir}/${normalName}/${projectName}/"`, { encoding: 'utf-8' })
 
-            const projectDetails = execSync(`zenity --password | sudo -S bash -c 'echo "Project Name: ${projectName}\n\nProject Details: ${arrayProjectInfo[1]}\n\nDue Date: ${arrayProjectInfo[2]}" > "${folderDir}/${normalName}/${projectName}/Project Information"'`, { encoding: 'utf-8' })
+            if (projInfo !== undefined) {
+                const projectDetails = execSync(`zenity --password | sudo -S bash -c 'echo "Project Name: ${projectName}\n\nProject Details: ${arrayProjectInfo[1]}\n\nDue Date: ${arrayProjectInfo[2]}" > "${folderDir}/${normalName}/${projectName}/Project Information"'`, { encoding: 'utf-8' })
+            }
 
             const clearSD = execSync(`zenity --question --title "Clear SD" --text "Footage imported successfully!\nWould you like to clear the SD Card?" --no-wrap --ok-label "Yes" --cancel-label "No"`, { encoding: 'utf-8' })
 
