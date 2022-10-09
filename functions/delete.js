@@ -60,7 +60,7 @@ module.exports = {
 
             const deleteDir = execSync(`zenity --password | sudo -S rm -rf "${folderDir}/${workspaceNormalName}/${projectNormalName}"`, { encoding: 'utf-8' })
 
-            let FINAL = execSync(`zenity --info --title "Project Deleted" --text "Project <b>${workspaceNormalName}</b> has been deleted." --no-wrap`, { encoding: 'utf-8' })
+            let FINAL = execSync(`zenity --info --title "Project Deleted" --text "Project <b>${projectNormalName}</b> has been deleted." --no-wrap`, { encoding: 'utf-8' })
 
         } catch (e) {
 
