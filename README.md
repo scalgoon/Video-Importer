@@ -28,8 +28,8 @@ If you click yes you will see a new icon added, click it then select "Mark as tr
 Video Importer is a GUI for the linux cp and mv command, perfect for RAID Media Servers where you may not have root access to drag and drop files yourself.
 <br>
 <br>
-To use simply open the app from the methods listed above and you will be prompted with 3 options:
-<img src="assets/3options.png" alt="3 options"></img>
+To use simply open the app from the methods listed above and you will be prompted with 4 options:
+<img src="assets/4options.png" alt="4 options"></img>
 <br>
 <br>
 From there you will follow the prompts for the selected process.
