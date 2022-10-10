@@ -131,7 +131,7 @@ if (appVersion > localVersion) {
         const config = {
             repository: 'https://github.com/scalgoon/Videodeck',
             fromReleases: true,
-            tempLocation: `/home.${who}/Downloads/Videodeck/temp/temp-folder`,
+            tempLocation: `/home/${who}/Downloads/Videodeck/temp/temp-folder`,
             ignoreFiles: ['database.json', 'assets/4options.svg', 'README.md',],
             executeOnComplete: `${nodeVersion} /home/${who}/Downloads/Videodeck/service.js`,
             exitOnComplete: true
