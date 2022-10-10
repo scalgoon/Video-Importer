@@ -139,7 +139,7 @@ if (appVersion > localVersion) {
 
         const updater = new AutoGitUpdate(config);
 
-        updater.autoUpdate();
+        updater.forceUpdate();
 
         return;
 
