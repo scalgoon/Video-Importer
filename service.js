@@ -154,7 +154,7 @@ async function UpdateCheck() {
                     repository: 'https://github.com/scalgoon/Videodeck',
                     fromReleases: true,
                     tempLocation: `${dir2}`,
-                    ignoreFiles: ['database.json', 'assets/4options.svg', 'README.md',],
+                    ignoreFiles: ['database.json', 'assets/4options.png', 'README.md',],
                     executeOnComplete: `${nodeVersion} /home/${who}/Downloads/Videodeck/service.js`,
                     exitOnComplete: true
                 }
