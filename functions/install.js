@@ -49,7 +49,8 @@ module.exports = {
             --column "Options" \
             FALSE "Create Desktop Shortcut" \
             FALSE "Project Information File" \
-            FALSE "Application Menu Shortcut"`, { encoding: 'utf-8' })
+            FALSE "Application Menu Shortcut" \
+            TRUE "Automatically Check for Updates"`, { encoding: 'utf-8' })
 
             const trimAppSettings = appSettings.trim();
 
@@ -71,6 +72,14 @@ module.exports = {
             if (arrayAppSettings.includes("Project Information File")) {
 
                 await db.push("/", { appName: finalAppName, folderDir: newFolder, infoFile: "YES" });
+
+            } else if (arrayAppSettings.includes("Automatically Check for Updates")) {
+
+                await db.push("/", { appName: finalAppName, folderDir: newFolder, autoUpdate: "TRUE" });
+
+            } else if (arrayAppSettings.includes("Project Information File") && arrayAppSettings.includes("Automatically Check for Updates")) {
+
+                await db.push("/", { appName: finalAppName, folderDir: newFolder, infoFile: "YES", autoUpdate: "TRUE" });
 
             } else {
 
