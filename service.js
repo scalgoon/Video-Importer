@@ -110,53 +110,71 @@ async function AppService() {
 
 }
 
-if (appVersion > localVersion) {
+async function UpdateCheck() {
 
-    try {
+    let data = await db.getData("/");
 
-        const updatePrompt = execSync(`zenity --question --title "Update Needed" --text "Your app version <b>${localVersion}</b> is not up to date with the repository version <b>${appVersion}</b>" --no-wrap --ok-label "Update" --cancel-label "Dont Update"`, { encoding: 'utf-8' })
+    const updateFeature = data.autoUpdate;
 
-        const getNode = execSync(`which node`, { encoding: 'utf-8' })
+    if (updateFeature === undefined) {
 
-        const nodeVersion = getNode.trim();
+        AppService();
 
-        let dir = `/home/${who}/Downloads/Videodeck/temp/temp-folder`;
+    } else {
+        
+        if (appVersion > localVersion) {
 
-        if (!fs.existsSync(dir)) {
+            try {
 
-            const makeTempDir = execSync(`mkdir ${dir}`, { encoding: 'utf-8' })
+                const updatePrompt = execSync(`zenity --question --title "Update Needed" --text "Your app version <b>${localVersion}</b> is not up to date with the repository version <b>${appVersion}</b>" --no-wrap --ok-label "Update" --cancel-label "Dont Update"`, { encoding: 'utf-8' })
 
-        }
+                const getNode = execSync(`which node`, { encoding: 'utf-8' })
 
-        const config = {
-            repository: 'https://github.com/scalgoon/Videodeck',
-            fromReleases: true,
-            tempLocation: `/home/${who}/Downloads/Videodeck/temp/temp-folder`,
-            ignoreFiles: ['database.json', 'assets/4options.svg', 'README.md',],
-            executeOnComplete: `${nodeVersion} /home/${who}/Downloads/Videodeck/service.js`,
-            exitOnComplete: true
-        }
+                const nodeVersion = getNode.trim();
 
-        const updater = new AutoGitUpdate(config);
+                let dir = `/home/${who}/Desktop/videodeck-temp/temp-folder`;
 
-        updater.forceUpdate();
+                if (!fs.existsSync(dir)) {
 
-        return;
+                    const makeTempDir = execSync(`mkdir ${dir}`, { encoding: 'utf-8' })
 
-    } catch (e) {
+                }
 
-        if (e.status === 1) {
+                const config = {
+                    repository: 'https://github.com/scalgoon/Videodeck',
+                    fromReleases: true,
+                    tempLocation: `${dir}`,
+                    ignoreFiles: ['database.json', 'assets/4options.svg', 'README.md',],
+                    executeOnComplete: `${nodeVersion} /home/${who}/Downloads/Videodeck/service.js`,
+                    exitOnComplete: true
+                }
+
+                const updater = new AutoGitUpdate(config);
+
+                updater.autoUpdate();
+
+                return;
+
+            } catch (e) {
+
+                if (e.status === 1) {
+
+                    AppService();
+
+                }
+
+                return;
+
+            }
+
+        } else {
 
             AppService();
 
         }
 
-        return;
-
     }
 
-} else {
-
-    AppService();
-
 }
+
+UpdateCheck();
