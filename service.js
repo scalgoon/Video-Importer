@@ -134,7 +134,7 @@ async function UpdateCheck() {
 
                 const nodeVersion = getNode.trim();
 
-                let dir = `/home/${who}/Desktop/videodeck-temp/temp-folder`;
+                let dir = `/home/${who}/Desktop/videodeck-temp/`;
 
                 if (!fs.existsSync(dir)) {
 
@@ -142,10 +142,18 @@ async function UpdateCheck() {
 
                 }
 
+                let dir2 = `/home/${who}/Desktop/videodeck-temp/temp-folder`;
+
+                if (!fs.existsSync(dir2)) {
+
+                    const makeTempDir = execSync(`mkdir ${dir2}`, { encoding: 'utf-8' })
+
+                }
+
                 const config = {
                     repository: 'https://github.com/scalgoon/Videodeck',
                     fromReleases: true,
-                    tempLocation: `${dir}`,
+                    tempLocation: `${dir2}`,
                     ignoreFiles: ['database.json', 'assets/4options.svg', 'README.md',],
                     executeOnComplete: `${nodeVersion} /home/${who}/Downloads/Videodeck/service.js`,
                     exitOnComplete: true
