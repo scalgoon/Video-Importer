@@ -116,6 +116,8 @@ async function UpdateCheck() {
 
     const updateFeature = data.autoUpdate;
 
+    const appName = data.appName;
+
     if (updateFeature === undefined) {
 
         AppService();
@@ -152,6 +154,8 @@ async function UpdateCheck() {
                 const updater = new AutoGitUpdate(config);
 
                 updater.autoUpdate();
+
+                const progressDisplay = execSync(`zenity --progress --width 350 --pulsate --text "Updating Application..." --title "${appName}" --no-cancel`, { encoding: 'utf-8' })
 
                 return;
 
