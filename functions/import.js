@@ -40,6 +40,8 @@ module.exports = {
 
             let projectName;
 
+            let arrayProjectInfo;
+
             if (projInfo === undefined) {
 
                 const name = execSync('zenity --entry --title "Project Name" --text "Please enter the name of your project"', { encoding: 'utf-8' })
@@ -57,7 +59,7 @@ module.exports = {
 
                 const splitProjectInfo = trimProjectInfo.split("|");
 
-                const arrayProjectInfo = Array.from(splitProjectInfo);
+                arrayProjectInfo = Array.from(splitProjectInfo);
 
                 projectName = arrayProjectInfo[0];
 
@@ -79,10 +81,8 @@ module.exports = {
                 const makeDir = execSync(`zenity --password | sudo -S mkdir "${folderDir}/${normalName}/${projectName}"`, { encoding: 'utf-8' })
             }
 
-            const showProgress = execSync('zenity --info --title "Import Started" --text "The import process has started.\nA screen will pop up when it has completed!" --no-wrap', { encoding: 'utf-8' })
-
-            const copyFiles = execSync(`zenity --password | sudo -S cp -r "${newVideo}" "${folderDir}/${normalName}/${projectName}/"`, { encoding: 'utf-8' })
-
+            const process = execSync(`(zenity --password | sudo -S cp -r "${newVideo}" "${folderDir}/${normalName}/${projectName}/") | zenity --progress --width 350 --pulsate --auto-close --text "Importing Media..." --title "${appName}"`, { encoding: 'utf-8' })
+            
             if (projInfo !== undefined) {
                 const projectDetails = execSync(`zenity --password | sudo -S bash -c 'echo "Project Name: ${projectName}\n\nProject Details: ${arrayProjectInfo[1]}\n\nDue Date: ${arrayProjectInfo[2]}" > "${folderDir}/${normalName}/${projectName}/Project Information"'`, { encoding: 'utf-8' })
             }
