@@ -1,6 +1,6 @@
 {
   "name": "videodeck",
-  "version": "1.8.0",
+  "version": "1.8.6",
   "description": "",
   "main": "service.js",
   "scripts": {
@@ -9,6 +9,7 @@
   "author": "Dez",
   "license": "ISC",
   "dependencies": {
+    "auto-git-update": "^2.1.2",
     "fs": "^0.0.1-security",
     "node-json-db": "^2.1.3"
   }
