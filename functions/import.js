@@ -81,7 +81,7 @@ module.exports = {
                 const makeDir = execSync(`zenity --password | sudo -S mkdir "${folderDir}/${normalName}/${projectName}"`, { encoding: 'utf-8' })
             }
 
-            const process = execSync(`(zenity --password | sudo -S cp -r "${newVideo}" "${folderDir}/${normalName}/${projectName}/") | zenity --progress --width 350 --pulsate --auto-close --text "Importing Media..." --title "${appName}"`, { encoding: 'utf-8' })
+            const process = execSync(`(zenity --password | sudo -S cp -r "${newVideo}" "${folderDir}/${normalName}/${projectName}/") | zenity --progress --width 350 --pulsate --auto-close --text "Importing Media..." --title "${appName}" --no-cancel`, { encoding: 'utf-8' })
             
             if (projInfo !== undefined) {
                 const projectDetails = execSync(`zenity --password | sudo -S bash -c 'echo "Project Name: ${projectName}\n\nProject Details: ${arrayProjectInfo[1]}\n\nDue Date: ${arrayProjectInfo[2]}" > "${folderDir}/${normalName}/${projectName}/Project Information"'`, { encoding: 'utf-8' })
