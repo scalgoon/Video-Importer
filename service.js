@@ -20,110 +20,86 @@ const localVersionCheck = execSync(`cat /home/${who}/Downloads/Videodeck/temp/ve
 
 const localVersion = localVersionCheck.trim();
 
-async function AppService() {
+let dir = `/home/${who}/Downloads/Videodeck/`;
 
-    let dir = `/home/${who}/Downloads/Videodeck/`;
+if (fs.existsSync(dir)) {
 
-    if (fs.existsSync(dir)) {
+    async function AppService() {
 
-        async function Service() {
+        let data = await db.getData("/");
 
-            let data = await db.getData("/");
+        const appName = data.appName;
 
-            const appName = data.appName;
+        const folderDir = data.folderDir;
 
-            const folderDir = data.folderDir;
+        if (appName === undefined && folderDir === undefined) {
 
-            if (appName === undefined && folderDir === undefined) {
+            let app4 = require('./functions/install');
 
-                let app4 = require('./functions/install');
+            app4.installService();
 
-                app4.installService();
+            return;
+
+        } else {
+
+            try {
+
+                let data = await db.getData("/");
+
+                const appName = data.appName;
+
+                const folderDir = data.folderDir;
+
+                const START = execSync(`zenity --info --title "${appName}" --text "To begin select which action you want to take." --no-wrap --ok-label "Import Media" --extra-button "Add Workspace Folder" --extra-button "Delete Workspace Folder" --extra-button "Delete Project"`, { encoding: 'utf-8' })
+
+                let app = require('./functions/import');
+
+                app.importMedia();
 
                 return;
 
-            } else {
+            } catch (e) {
 
-                try {
+                if (e.status === 1 && e.stdout === "Add Workspace Folder\n") {
 
-                    let data = await db.getData("/");
+                    let app2 = require('./functions/workspace-add');
 
-                    const appName = data.appName;
-
-                    const folderDir = data.folderDir;
-
-                    const START = execSync(`zenity --info --title "${appName}" --text "To begin select which action you want to take." --no-wrap --ok-label "Import Media" --extra-button "Add Workspace Folder" --extra-button "Delete Workspace Folder" --extra-button "Delete Project"`, { encoding: 'utf-8' })
-
-                    let app = require('./functions/import');
-
-                    app.importMedia();
+                    app2.addWorkspace();
 
                     return;
 
-                } catch (e) {
+                } else if (e.status === 1 && e.stdout === "Delete Workspace Folder\n") {
 
-                    if (e.status === 1 && e.stdout === "Add Workspace Folder\n") {
+                    let app2 = require('./functions/workspace-delete');
 
-                        let app2 = require('./functions/workspace-add');
-
-                        app2.addWorkspace();
-
-                        return;
-
-                    } else if (e.status === 1 && e.stdout === "Delete Workspace Folder\n") {
-
-                        let app2 = require('./functions/workspace-delete');
-
-                        app2.deleteWorkspace();
-
-                        return;
-
-                    } else if (e.status === 1 && e.stdout === "Delete Project\n") {
-
-                        let app3 = require('./functions/delete');
-
-                        app3.deleteMedia();
-
-                        return;
-
-                    } else if (e.status === 1) {
-
-                        let END = execSync(`zenity --error --title "${appName}" --text "Import process canceled" --no-wrap`, { encoding: 'utf-8' })
-
-                    }
+                    app2.deleteWorkspace();
 
                     return;
+
+                } else if (e.status === 1 && e.stdout === "Delete Project\n") {
+
+                    let app3 = require('./functions/delete');
+
+                    app3.deleteMedia();
+
+                    return;
+
+                } else if (e.status === 1) {
+
+                    let END = execSync(`zenity --error --title "${appName}" --text "Import process canceled" --no-wrap`, { encoding: 'utf-8' })
 
                 }
+
+                return;
 
             }
 
         }
 
-        Service();
-
-    } else {
-
-        let END = execSync('zenity --error --title "Setup Failed" --text "Please make sure the app folder is in <b>/home/$USER/Downloads/</b> and is named <b>Videodeck</b>!" --no-wrap', { encoding: 'utf-8' })
-
     }
 
-}
+    async function UpdateCheck() {
 
-async function UpdateCheck() {
-
-    let data = await db.getData("/");
-
-    const updateFeature = data.autoUpdate;
-
-    const appName = data.appName;
-
-    if (updateFeature === undefined) {
-
-        AppService();
-
-    } else {
-        
         if (appVersion > localVersion) {
 
             try {
@@ -134,38 +110,7 @@ async function UpdateCheck() {
 
                 const nodeVersion = getNode.trim();
 
-                let dir = `/home/${who}/Desktop/videodeck-temp/`;
-
-                if (!fs.existsSync(dir)) {
-
-                    const makeTempDir = execSync(`mkdir ${dir}`, { encoding: 'utf-8' })
-
-                }
-
-                let dir2 = `/home/${who}/Desktop/videodeck-temp/temp-folder`;
-
-                if (!fs.existsSync(dir2)) {
-
-                    const makeTempDir = execSync(`mkdir ${dir2}`, { encoding: 'utf-8' })
-
-                }
-
-                const config = {
-                    repository: 'https://github.com/scalgoon/Videodeck',
-                    fromReleases: true,
-                    tempLocation: `${dir2}`,
-                    ignoreFiles: ['database.json', 'assets/4options.png', 'README.md',],
-                    executeOnComplete: `${nodeVersion} /home/${who}/Downloads/Videodeck/service.js`,
-                    exitOnComplete: true
-                }
-
-                const updater = new AutoGitUpdate(config);
-
-                updater.autoUpdate();
-
-                const progressDisplay = execSync(`zenity --progress --width 350 --pulsate --text "Updating Application..." --title "${appName}" --no-cancel`, { encoding: 'utf-8' })
-
-                return;
+                const updateProcess = execSync(`konsole -e ${nodeVersion} /home/${who}/Downloads/Videodeck/app/update.js`, { encoding: 'utf-8' })
 
             } catch (e) {
 
@@ -187,6 +132,10 @@ async function UpdateCheck() {
 
     }
 
-}
+    UpdateCheck();
 
-UpdateCheck();
+} else {
+
+    let END = execSync('zenity --error --title "Setup Failed" --text "Please make sure the app folder is in <b>/home/$USER/Downloads/</b> and is named <b>Videodeck</b>!" --no-wrap', { encoding: 'utf-8' })
+
+}
