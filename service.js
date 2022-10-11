@@ -10,23 +10,39 @@ const whoami = execSync('whoami', { encoding: 'utf-8' })
 
 const who = whoami.trim()
 
-const db = new JsonDB(new Config(`/home/${who}/Downloads/Videodeck/database`, true, false, '/'));
+const pwd = execSync('pwd', { encoding: 'utf-8' })
+
+const where = pwd.trim();
+
+const db = new JsonDB(new Config(`${where}/database`, true, false, '/'));
 
 const versionCheck = execSync(`curl -sL https://api.github.com/repos/scalgoon/Videodeck/releases/latest | jq -r ".tag_name"`, { encoding: 'utf-8' })
 
 const appVersion = versionCheck.trim();
 
-const localVersionCheck = execSync(`cat /home/${who}/Downloads/Videodeck/temp/version.txt`, { encoding: 'utf-8' })
+const localVersionCheck = execSync(`cat "${where}/temp/version.txt"`, { encoding: 'utf-8' })
 
 const localVersion = localVersionCheck.trim();
 
-async function AppService() {
+async function Service() {
 
-    let dir = `/home/${who}/Downloads/Videodeck/`;
+    let data = await db.getData("/");
 
-    if (fs.existsSync(dir)) {
+    const appName = data.appName;
 
-        async function Service() {
+    const folderDir = data.folderDir;
+
+    if (appName === undefined && folderDir === undefined) {
+
+        let app4 = require('./functions/install');
+
+        app4.installService();
+
+        return;
+
+    } else {
+
+        try {
 
             let data = await db.getData("/");
 
@@ -34,77 +50,49 @@ async function AppService() {
 
             const folderDir = data.folderDir;
 
-            if (appName === undefined && folderDir === undefined) {
+            const START = execSync(`zenity --info --title "${appName}" --text "To begin select which action you want to take." --no-wrap --ok-label "Import Media" --extra-button "Add Workspace Folder" --extra-button "Delete Workspace Folder" --extra-button "Delete Project"`, { encoding: 'utf-8' })
 
-                let app4 = require('./functions/install');
+            let app = require('./functions/import');
 
-                app4.installService();
+            app.importMedia();
+
+            return;
+
+        } catch (e) {
+
+            if (e.status === 1 && e.stdout === "Add Workspace Folder\n") {
+
+                let app2 = require('./functions/workspace-add');
+
+                app2.addWorkspace();
 
                 return;
 
-            } else {
+            } else if (e.status === 1 && e.stdout === "Delete Workspace Folder\n") {
 
-                try {
+                let app2 = require('./functions/workspace-delete');
 
-                    let data = await db.getData("/");
+                app2.deleteWorkspace();
 
-                    const appName = data.appName;
+                return;
 
-                    const folderDir = data.folderDir;
+            } else if (e.status === 1 && e.stdout === "Delete Project\n") {
 
-                    const START = execSync(`zenity --info --title "${appName}" --text "To begin select which action you want to take." --no-wrap --ok-label "Import Media" --extra-button "Add Workspace Folder" --extra-button "Delete Workspace Folder" --extra-button "Delete Project"`, { encoding: 'utf-8' })
+                let app3 = require('./functions/delete');
 
-                    let app = require('./functions/import');
+                app3.deleteMedia();
 
-                    app.importMedia();
+                return;
 
-                    return;
+            } else if (e.status === 1) {
 
-                } catch (e) {
-
-                    if (e.status === 1 && e.stdout === "Add Workspace Folder\n") {
-
-                        let app2 = require('./functions/workspace-add');
-
-                        app2.addWorkspace();
-
-                        return;
-
-                    } else if (e.status === 1 && e.stdout === "Delete Workspace Folder\n") {
-
-                        let app2 = require('./functions/workspace-delete');
-
-                        app2.deleteWorkspace();
-
-                        return;
-
-                    } else if (e.status === 1 && e.stdout === "Delete Project\n") {
-
-                        let app3 = require('./functions/delete');
-
-                        app3.deleteMedia();
-
-                        return;
-
-                    } else if (e.status === 1) {
-
-                        let END = execSync(`zenity --error --title "${appName}" --text "Import process canceled" --no-wrap`, { encoding: 'utf-8' })
-
-                    }
-
-                    return;
-
-                }
+                let END = execSync(`zenity --error --title "${appName}" --text "Import process canceled" --no-wrap`, { encoding: 'utf-8' })
 
             }
 
+            return;
+
         }
-
-        Service();
-
-    } else {
-
-        let END = execSync('zenity --error --title "Setup Failed" --text "Please make sure the app folder is in <b>/home/$USER/Downloads/</b> and is named <b>Videodeck</b>!" --no-wrap', { encoding: 'utf-8' })
 
     }
 
@@ -120,66 +108,21 @@ async function UpdateCheck() {
 
     if (updateFeature === undefined) {
 
-        AppService();
+        Service();
 
     } else {
-        
+
         if (appVersion > localVersion) {
 
-            try {
+            const getNode = execSync(`which node`, { encoding: 'utf-8' })
 
-                const updatePrompt = execSync(`zenity --question --title "Update Needed" --text "Your app version <b>${localVersion}</b> is not up to date with the repository version <b>${appVersion}</b>" --no-wrap --ok-label "Update" --cancel-label "Dont Update"`, { encoding: 'utf-8' })
+            const nodeVersion = getNode.trim();
 
-                const getNode = execSync(`which node`, { encoding: 'utf-8' })
-
-                const nodeVersion = getNode.trim();
-
-                let dir = `/home/${who}/Desktop/videodeck-temp/`;
-
-                if (!fs.existsSync(dir)) {
-
-                    const makeTempDir = execSync(`mkdir ${dir}`, { encoding: 'utf-8' })
-
-                }
-
-                let dir2 = `/home/${who}/Desktop/videodeck-temp/temp-folder`;
-
-                if (!fs.existsSync(dir2)) {
-
-                    const makeTempDir = execSync(`mkdir ${dir2}`, { encoding: 'utf-8' })
-
-                }
-
-                const config = {
-                    repository: 'https://github.com/scalgoon/Videodeck',
-                    fromReleases: true,
-                    tempLocation: `${dir2}`,
-                    ignoreFiles: ['database.json', 'assets/4options.png', 'README.md',],
-                    executeOnComplete: `${nodeVersion} /home/${who}/Downloads/Videodeck/service.js`,
-                    exitOnComplete: true
-                }
-
-                const updater = new AutoGitUpdate(config);
-
-                updater.forceUpdate();
-
-                return;
-
-            } catch (e) {
-
-                if (e.status === 1) {
-
-                    AppService();
-
-                }
-
-                return;
-
-            }
+            const doUpdate = execSync(`konsole -e ${nodeVersion} "${where}/app/updateer.js"`, { encoding: 'utf-8' })
 
         } else {
 
-            AppService();
+            Service();
 
         }
 
