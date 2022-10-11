@@ -8,7 +8,11 @@ const whoami = execSync('whoami', { encoding: 'utf-8' })
 
 const who = whoami.trim()
 
-const db = new JsonDB(new Config(`/home/${who}/Downloads/Videodeck/database`, true, false, '/'));
+const pwd = execSync('pwd', { encoding: 'utf-8' })
+
+const where = pwd.trim();
+
+const db = new JsonDB(new Config(`${where}/database`, true, false, '/'));
 
 module.exports = {
     importMedia: async () => {
@@ -38,34 +42,68 @@ module.exports = {
         --column="*" --column="Workspace" \
             ${useChoices}`, { encoding: 'utf-8' })
 
+            const normalName = choices.trim();
+
             let projectName;
 
             let arrayProjectInfo;
 
-            if (projInfo === undefined) {
+            const projectOutput = execSync(`for dir in ${folderDir}/${normalName}/*/; do basename "$dir"; done`, { encoding: 'utf-8' });
 
-                const name = execSync('zenity --entry --title "Project Name" --text "Please enter the name of your project"', { encoding: 'utf-8' })
+            let projectSplitChoices = projectOutput.split("\n");
 
-                projectName = name.trim();
+            let projectChoicesArray = Array.from(projectSplitChoices);
 
-            } else {
+            let projectFilteredArray = projectChoicesArray.filter(e => e !== "");
 
-                const projectInfo = execSync(`zenity --forms --title="Import Media" --text="Project Information" \
-            --add-entry="Project Name" \
-            --add-entry="Details" \
-            --add-calendar="Due Date"`, { encoding: 'utf-8' })
+            let projectUseChoices = projectFilteredArray.map((x) => `"*" "${x}" \ `);
 
-                const trimProjectInfo = projectInfo.trim();
+            try {
 
-                const splitProjectInfo = trimProjectInfo.split("|");
+                const projectChoices = execSync(`zenity --list \
+                --radiolist --title="Select A Project" \
+                --column="*" --extra-button="Create New Project" --column="${normalName}" \
+                    ${projectUseChoices}`, { encoding: 'utf-8' })
 
-                arrayProjectInfo = Array.from(splitProjectInfo);
+                const projectNormalName = projectChoices.trim();
 
-                projectName = arrayProjectInfo[0];
+                projectName = projectNormalName;
+
+            } catch (e) {
+
+                if (e.status === 1 && e.stdout === "Create New Project\n") {
+
+                    if (projInfo === undefined) {
+
+                        const name = execSync('zenity --entry --title "Project Name" --text "Please enter the name of your project"', { encoding: 'utf-8' })
+        
+                        projectName = name.trim();
+        
+                    } else {
+        
+                        const projectInfo = execSync(`zenity --forms --title="Import Media" --text="Project Information" \
+                    --add-entry="Project Name" \
+                    --add-entry="Details" \
+                    --add-calendar="Due Date"`, { encoding: 'utf-8' })
+        
+                        const trimProjectInfo = projectInfo.trim();
+        
+                        const splitProjectInfo = trimProjectInfo.split("|");
+        
+                        arrayProjectInfo = Array.from(splitProjectInfo);
+        
+                        projectName = arrayProjectInfo[0];
+        
+                    }
+
+                } else if (e.status === 1) {
+
+                    let END = execSync(`zenity --error --title "${appName}" --text "Import process canceled" --no-wrap`, { encoding: 'utf-8' })
+                
+                    return;
+                }
 
             }
-
-            const normalName = choices.trim();
 
             const videoFiles = execSync(`zenity --file-selection --title "${normalName}" --multiple --filename "/media/$USER/" --directory`, { encoding: 'utf-8' })
 
@@ -82,7 +120,7 @@ module.exports = {
             }
 
             const process = execSync(`(zenity --password | sudo -S cp -r "${newVideo}" "${folderDir}/${normalName}/${projectName}/") | zenity --progress --width 350 --pulsate --auto-close --text "Importing Media..." --title "${appName}" --no-cancel`, { encoding: 'utf-8' })
-            
+
             if (projInfo !== undefined) {
                 const projectDetails = execSync(`zenity --password | sudo -S bash -c 'echo "Project Name: ${projectName}\n\nProject Details: ${arrayProjectInfo[1]}\n\nDue Date: ${arrayProjectInfo[2]}" > "${folderDir}/${normalName}/${projectName}/Project Information"'`, { encoding: 'utf-8' })
             }
