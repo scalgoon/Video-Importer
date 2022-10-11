@@ -8,7 +8,11 @@ const whoami = execSync('whoami', { encoding: 'utf-8' })
 
 const who = whoami.trim()
 
-const db = new JsonDB(new Config(`/home/${who}/Downloads/Videodeck/database`, true, false, '/'));
+const pwd = execSync('pwd', { encoding: 'utf-8' })
+
+const where = pwd.trim();
+
+const db = new JsonDB(new Config(`${where}/database`, true, false, '/'));
 
 module.exports = {
     deleteWorkspace: async () => {
