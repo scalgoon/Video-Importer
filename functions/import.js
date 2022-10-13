@@ -60,14 +60,47 @@ module.exports = {
 
             try {
 
-                const projectChoices = execSync(`zenity --list \
-                --radiolist --title="Select A Project" \
+                let dir2 = `${folderDir}/${normalName}/`;
+
+                const isEmptyDir = await Fs.isEmptyDir(dir2);
+
+                if (isEmptyDir === true) {
+
+                    if (projInfo === undefined) {
+
+                        const name2 = execSync('zenity --entry --title "Project Name" --text "Please enter the name of your project"', { encoding: 'utf-8' })
+
+                        projectName = name2.trim();
+
+                    } else {
+
+                        const projectInfo2 = execSync(`zenity --forms --title="Import Media" --text="Project Information" \
+                    --add-entry="Project Name" \
+                    --add-entry="Details" \
+                    --add-calendar="Due Date"`, { encoding: 'utf-8' })
+
+                        const trimProjectInfo2 = projectInfo2.trim();
+
+                        const splitProjectInfo2 = trimProjectInfo2.split("|");
+
+                        arrayProjectInfo = Array.from(splitProjectInfo2);
+
+                        projectName = arrayProjectInfo[0];
+
+                    }
+
+                } else {
+
+                    const projectChoices = execSync(`zenity --list \
+                --radiolist --title="Select A Project" --width=300 --height=300 \
                 --column="*" --extra-button="Create New Project" --column="${normalName}" \
                     ${projectUseChoices}`, { encoding: 'utf-8' })
 
-                const projectNormalName = projectChoices.trim();
+                    const projectNormalName = projectChoices.trim();
 
-                projectName = projectNormalName;
+                    projectName = projectNormalName;
+
+                }
 
             } catch (e) {
 
