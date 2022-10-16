@@ -17,7 +17,7 @@ const db = new JsonDB(new Config(`${where}/database`, true, false, '/'));
 module.exports = {
     deleteWorkspace: async () => {
 
-        let data = await db.getData("/");
+       let data = await db.getData("/");
 
         const appName = data.appName;
 
@@ -39,6 +39,14 @@ module.exports = {
         --radiolist --title="Delete Workspace" \
         --column="*" --column="Workspace" \
             ${useChoices}`, { encoding: 'utf-8' })
+
+            if (!choices) {
+
+                let END = execSync(`zenity --error --title "Setup Canceled" --text "Please select a workspace!" --no-wrap`, { encoding: 'utf-8' })
+
+                return;
+
+            }
 
             const workspaceName = choices.trim();
 
