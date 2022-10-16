@@ -42,6 +42,13 @@ module.exports = {
 
             const workspaceNormalName = workspaceChoices.trim();
 
+            if (!workspaceChoices) {
+
+                let END = execSync(`zenity --error --title "${appName}" --text "Please select a workspace!" --no-wrap`, { encoding: 'utf-8' })
+
+                return;
+
+            }
 
             const projectOutput = execSync(`for dir in ${folderDir}/${workspaceNormalName}/*/; do basename "$dir"; done`, { encoding: 'utf-8' });
 
@@ -57,6 +64,14 @@ module.exports = {
                 --radiolist --title="Select A Project" \
                 --column="*" --column="${workspaceNormalName}" \
                     ${projectUseChoices}`, { encoding: 'utf-8' })
+
+            if (!projectChoices) {
+
+                let END = execSync(`zenity --error --title "${appName}" --text "Please select a project!" --no-wrap`, { encoding: 'utf-8' })
+
+                return;
+
+            }
 
             const projectNormalName = projectChoices.trim();
 
