@@ -17,7 +17,7 @@ const db = new JsonDB(new Config(`${where}/database`, true, false, '/'));
 module.exports = {
     addWorkspace: async () => {
       
-        let data = await db.getData("/");
+       let data = await db.getData("/");
 
         const appName = data.appName;
 
@@ -28,6 +28,14 @@ module.exports = {
             const name = execSync('zenity --entry --title "Workspace Name" --text "Please enter the name for the workspace."', { encoding: 'utf-8' })
 
             const workspaceName = name.trim();
+
+            if (!workspaceName) {
+
+                let END = execSync(`zenity --error --title "${appName}" --text "Please specify a workspace name!" --no-wrap`, { encoding: 'utf-8' })
+
+                return;
+
+            }
 
             const workspaceVerify = execSync(`zenity --question --title "Add Workspace" --text "<b>${workspaceName}</b>\nIs this the correct name?" --no-wrap --ok-label "Yes" --cancel-label "No"`, { encoding: 'utf-8' })
 
