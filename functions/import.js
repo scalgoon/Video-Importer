@@ -38,9 +38,16 @@ module.exports = {
             let useChoices = filteredArray.map((x) => `"*" ${x} \ `);
 
             const choices = execSync(`zenity --list \
-        --radiolist --title="File Import" \
-        --column="*" --column="Workspace" \
-            ${useChoices}`, { encoding: 'utf-8' })
+            --radiolist --title="File Import" \
+            --column="*" --column="Workspace" \
+                ${useChoices}`, { encoding: 'utf-8' })
+
+            if (!choices) {
+
+                let END = execSync(`zenity --error --title "${appName}" --text "Please select a workspace!" --no-wrap`, { encoding: 'utf-8' })
+
+                return;
+            }
 
             const normalName = choices.trim();
 
@@ -72,12 +79,19 @@ module.exports = {
 
                         projectName = name2.trim();
 
+                        if (!projectName) {
+
+                            let END = execSync(`zenity --error --title "${appName}" --text "Please fill in the details!" --no-wrap`, { encoding: 'utf-8' })
+
+                            return;
+                        }
+
                     } else {
 
                         const projectInfo2 = execSync(`zenity --forms --title="Import Media" --text="Project Information" \
-                    --add-entry="Project Name" \
-                    --add-entry="Details" \
-                    --add-calendar="Due Date"`, { encoding: 'utf-8' })
+                            --add-entry="Project Name" \
+                            --add-entry="Details" \
+                            --add-calendar="Due Date"`, { encoding: 'utf-8' })
 
                         const trimProjectInfo2 = projectInfo2.trim();
 
@@ -87,18 +101,32 @@ module.exports = {
 
                         projectName = arrayProjectInfo[0];
 
+                        if (!projectInfo2) {
+
+                            let END = execSync(`zenity --error --title "${appName}" --text "Please fill in the details!" --no-wrap`, { encoding: 'utf-8' })
+
+                            return;
+                        }
+
                     }
 
                 } else {
 
                     const projectChoices = execSync(`zenity --list \
-                --radiolist --title="Select A Project" --width=300 --height=300 \
-                --column="*" --extra-button="Create New Project" --column="${normalName}" \
-                    ${projectUseChoices}`, { encoding: 'utf-8' })
+                        --radiolist --title="Select A Project" --width=300 --height=300 \
+                        --column="*" --extra-button="Create New Project" --column="${normalName}" \
+                            ${projectUseChoices}`, { encoding: 'utf-8' })
 
                     const projectNormalName = projectChoices.trim();
 
                     projectName = projectNormalName;
+
+                    if (!projectChoices) {
+
+                        let END = execSync(`zenity --error --title "${appName}" --text "Please fill in the details!" --no-wrap`, { encoding: 'utf-8' })
+
+                        return;
+                    }
 
                 }
 
@@ -109,30 +137,44 @@ module.exports = {
                     if (projInfo === undefined) {
 
                         const name = execSync('zenity --entry --title "Project Name" --text "Please enter the name of your project"', { encoding: 'utf-8' })
-        
+
                         projectName = name.trim();
-        
+
+                        if (!projectName) {
+
+                            let END = execSync(`zenity --error --title "${appName}" --text "Please fill in the details!" --no-wrap`, { encoding: 'utf-8' })
+
+                            return;
+                        }
+
                     } else {
-        
+
                         const projectInfo = execSync(`zenity --forms --title="Import Media" --text="Project Information" \
                     --add-entry="Project Name" \
                     --add-entry="Details" \
                     --add-calendar="Due Date"`, { encoding: 'utf-8' })
-        
+
                         const trimProjectInfo = projectInfo.trim();
-        
+
                         const splitProjectInfo = trimProjectInfo.split("|");
-        
+
                         arrayProjectInfo = Array.from(splitProjectInfo);
-        
+
                         projectName = arrayProjectInfo[0];
-        
+
+                        if (!projectName) {
+
+                            let END = execSync(`zenity --error --title "${appName}" --text "Please fill in the details!" --no-wrap`, { encoding: 'utf-8' })
+
+                            return;
+                        }
+
                     }
 
                 } else if (e.status === 1) {
 
                     let END = execSync(`zenity --error --title "${appName}" --text "Import process canceled" --no-wrap`, { encoding: 'utf-8' })
-                
+
                     return;
                 }
 
@@ -141,6 +183,14 @@ module.exports = {
             const videoFiles = execSync(`zenity --file-selection --title "${normalName}" --multiple --filename "/media/$USER/" --directory`, { encoding: 'utf-8' })
 
             const newVideo = videoFiles.trim();
+
+            if (newVideo === `/media/${who}`) {
+
+                let END = execSync(`zenity --error --title "${appName}" --text "Please select your media!" --no-wrap`, { encoding: 'utf-8' })
+
+                return;
+
+            }
 
             const footageVerify = execSync(`zenity --question --title "Footage Import" --text "<b>${newVideo}</b>\nIs this the correct directory?" --no-wrap --ok-label "Yes" --cancel-label "No"`, { encoding: 'utf-8' })
 
