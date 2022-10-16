@@ -37,6 +37,14 @@ module.exports = {
 
             const chooseFolderDir = execSync(`zenity --file-selection --title "Setup Project Folder" --multiple --filename "/home/$USER/" --directory`, { encoding: 'utf-8' })
 
+            if (chooseFolderDir === `/media/${who}`) {
+
+                let END = execSync(`zenity --error --title "Setup Canceled" --text "Please select your media!" --no-wrap`, { encoding: 'utf-8' })
+
+                return;
+
+            }
+
             const newFolder = chooseFolderDir.trim();
 
             const folderVerify = execSync(`zenity --question --title "Setup Project Folder" --text "<b>${newFolder}</b>\nIs this the correct directory?" --no-wrap --ok-label "Yes" --cancel-label "No"`, { encoding: 'utf-8' })
@@ -44,6 +52,14 @@ module.exports = {
             const appName = execSync('zenity --entry --title "App Name" --text "Please enter the your requested name for the app."', { encoding: 'utf-8' })
 
             const finalAppName = appName.trim();
+
+            if (!finalAppName) {
+
+                let END = execSync(`zenity --error --title "Setup Canceled" --text "Please specify a app name!" --no-wrap`, { encoding: 'utf-8' })
+
+                return;
+
+            }
 
             const appSettings = execSync(`zenity --list \
             --title="${finalAppName} Settings" --width=600 --height=600 \
@@ -91,7 +107,7 @@ module.exports = {
                     const restartPrompt = execSync(`zenity --question --title "Restart Prompt" --text "In order for the app to show in your Application menu you must restart the session." --no-wrap --ok-label "Restart now" --cancel-label "Restart later"`, { encoding: 'utf-8' })
 
                     const restarting = execSync(`reboot`, { encoding: 'utf-8' })
-                
+
                 } catch (e) {
 
                     if (e.status === 1) {
