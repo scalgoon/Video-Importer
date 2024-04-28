@@ -1,6 +1,6 @@
 <img src="accessories-camera.svg" alt="App Icon"></img>
 
-# Videodeck
+# Videodeck (OUTDATED V1)
 A NodeJS/Bash video import system for Linux based systems
 <br>
 <br>
